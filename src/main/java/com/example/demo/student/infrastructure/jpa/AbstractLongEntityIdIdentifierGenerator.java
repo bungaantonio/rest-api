@@ -18,7 +18,7 @@ import org.hibernate.type.Type;
 
 public abstract class AbstractLongEntityIdIdentifierGenerator<T extends EntityId>  implements IdentifierGenerator, Configurable {
 
-    private String sequenceCallSyntex;
+    private String sequenceCallSyntax;
 
     @Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {
@@ -40,8 +40,8 @@ public abstract class AbstractLongEntityIdIdentifierGenerator<T extends EntityId
                 ? params.getProperty(JPA_ENTITY_NAME) + sequencePerEntitySuffix
                 : SequenceStyleGenerator.DEF_SEQUENCE_NAME;
 
-        sequenceCallSyntex = dialect
-                .getSelectSequenceNextValString(
+        sequenceCallSyntax = dialect
+                .getSequenceNextValString(
                         ConfigurationHelper.getString(
                 SequenceStyleGenerator.SEQUENCE_PARAM,
                 params,
@@ -53,14 +53,13 @@ public abstract class AbstractLongEntityIdIdentifierGenerator<T extends EntityId
         if (obj instanceof Entity) {
             Entity entity = (Entity) obj;
             EntityId id = entity.getId();
-
             if (id != null) {
                 return id;
             }
         }
 
         long seqValue = ((Number) ((Session) session)
-                .createNativeQuery(sequenceCallSyntex)
+                .createNativeQuery(sequenceCallSyntax)
                 .uniqueResult())
                 .longValue();
 

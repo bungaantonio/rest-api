@@ -14,13 +14,15 @@ import org.hibernate.id.enhanced.SequenceStyleGenerator;
 @javax.persistence.Entity
 public class Student implements Entity<StudentId> {
 
-    @Embedded
-    @GenericGenerator(name = "assigned-sequence", strategy = "com.example.demo.student.StudentIdIdentifierGenerator", parameters = {
-            @Parameter(name = SequenceStyleGenerator.CONFIG_SEQUENCE_PER_ENTITY_SUFFIX, value = "true"),
-
-            @Parameter(name = SequenceStyleGenerator.CONFIG_SEQUENCE_PER_ENTITY_SUFFIX, value = "_SEQUENCE") })
-
-    @GeneratedValue(generator = "assigned-sequence", strategy = GenerationType.SEQUENCE)
+    @EmbeddedId
+    @GenericGenerator(name = "assigned-sequence",
+            strategy = "com.example.demo.student.StudentIdIdentifierGenerator",
+            parameters = {@Parameter(name = SequenceStyleGenerator.CONFIG_PREFER_SEQUENCE_PER_ENTITY,
+                    value = "true"),
+            @Parameter(name = SequenceStyleGenerator.CONFIG_SEQUENCE_PER_ENTITY_SUFFIX,
+                    value = "_SEQUENCE") })
+    @GeneratedValue(generator = "assigned-sequence",
+            strategy = GenerationType.SEQUENCE)
     private StudentId id;
 
     private String name;
@@ -35,6 +37,10 @@ public class Student implements Entity<StudentId> {
         this.name = name;
         this.course = course;
         this.createdAt = createdAt;
+    }
+
+    public Student() {
+
     }
 
     public static Student createStudent(String name,
